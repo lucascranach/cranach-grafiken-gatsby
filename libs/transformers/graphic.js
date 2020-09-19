@@ -1,5 +1,5 @@
 
-export default {
+const Transformers = {
   flattenGraphQlEdges(rawItems) {
     return rawItems.edges.reduce((acc, edge) => {
       acc.push(...edge.node.items);
@@ -26,3 +26,5 @@ export default {
     };
   },
 };
+
+module.exports = Transformers;

@@ -8,6 +8,7 @@ export default ({
   caption,
   classNamePrefix,
   modifierWithBox = false,
+  isLazy = true,
 }) => {
   const classNameModifier = modifierWithBox ? '--with-box' : '';
   const capArray = (Array.isArray(caption) ? caption : [caption]);
@@ -24,7 +25,8 @@ export default ({
         <img
           src={src}
           alt={alt}
-        ></img>
+          loading={ isLazy ? 'lazy' : '' }
+        />
       </div>
 
       {caption && <figcaption

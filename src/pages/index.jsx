@@ -1,60 +1,28 @@
+/* Initial redirect to '/de' or 'en' should happen, so we don't have to keep this file up to date */
 
-import React, { useState } from 'react';
-import Helmet from 'react-helmet';
-
+import React from 'react';
 import { graphql } from 'gatsby';
+import IndexTemplate from '~/templates/index';
 
-import Navigation from '~/components/molecules/navigation';
-import ArtefactOverview from '~/components/organisms/artefact-overview';
-
-import graphic from '~/libs/transformers/graphic';
-
-import i18n from '~/i18n';
+const graphicTransformer = require('~/../libs/transformers/graphic');
 
 
 export default ({ data }) => {
-  i18n('de');
+  const lang = {
+    name: 'German',
+    code: 'de',
+    path: 'de',
+  };
+  const graphics = graphicTransformer.flattenGraphQlEdges(data.allGraphicsJson)
+    .filter(graphicTransformer.byImageExistence)
+    .map(graphicTransformer.toArtefact);
 
-  const items = graphic.flattenGraphQlEdges(data.allGraphicsJson)
-    .filter(graphic.byImageExistence)
-    .map(graphic.toArtefact);
-
-  const [currentArtefactView, setCurrentArtefactView] = useState(ArtefactOverview.DefaultView);
-
-  return (
-    <div
-      className="page"
-      data-page="index"
-    >
-      <Helmet>
-        <title>Cranach Digital Archive | Home</title>
-      </Helmet>
-
-      <div
-        className="page-dark"
-      >
-        <Navigation>
-          <ArtefactOverview.Switcher
-            view={ currentArtefactView }
-            handleChange={ setCurrentArtefactView }
-          />
-        </Navigation>
-
-        <main
-          className="main-content"
-        >
-          <ArtefactOverview
-            view={ currentArtefactView }
-            items={ items }
-          />
-        </main>
-      </div>
-    </div>
-  );
+  return (<IndexTemplate pageContext={{ lang, graphics }} />);
 };
 
+
 export const query = graphql`
-  query VirtualCranachGraphicObjects {
+  query DefaultVirtualCranachGraphicObjects {
     allGraphicsJson(filter: {
       items: {
         elemMatch: {
